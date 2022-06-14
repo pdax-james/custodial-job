@@ -1,0 +1,6 @@
+dist
+node_modules
+config/test.js
+config/sandbox.js
+.DS_Store
+coverage

@@ -1,0 +1,26 @@
+{
+  "name": "pdax-custodial-jobs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "config": "^3.3.7",
+    "typescript": "^4.7.3"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.100",
+    "@types/config": "0.0.41",
+    "@types/node": "^17.0.42",
+    "nodemon": "^2.0.16",
+    "ts-node": "^10.8.1"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/",
+    "start:sandbox": "NODE_ENV=sandbox nodemon src/index.ts"
+    
+  },
+  "author": "James Saballegue",
+  "license": "ISC"
+}

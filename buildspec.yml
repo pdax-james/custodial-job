@@ -1,0 +1,42 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Entered the install phase...
+
+  pre_build:
+    commands:
+      - echo Entered the pre_build phase...
+      - echo "Installing dependencies for PDAX Custodial Jobs - `pwd`"
+      - cd scripts/
+      - pip3 install boto3
+      - python3 generate_config.py
+      - cd ..
+      - echo "dependencies install completed `date`"
+      - TAG="$ENVIRONMENT$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
+      - IMAGE_URI="${REPOSITORY_URI}:${TAG}"
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image..
+      - echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+      - docker build -t "$REPOSITORY_URI:$ENVIRONMENT" --build-arg NODE_ENV=$ENVIRONMENT .
+      - docker tag "$REPOSITORY_URI:$ENVIRONMENT" "$IMAGE_URI"
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo Pushing the Docker image...
+      - docker push "$IMAGE_URI"
+      - echo Writing image definitions file...
+      - printf '[{"name":"%s","imageUri":"%s"}]' "$SERVICE" "$IMAGE_URI" > imagedefinitions.json
+      - docker push "$REPOSITORY_URI:$ENVIRONMENT"
+
+artifacts:
+  files:
+    - imagedefinitions.json
+    - config/$ENVIRONMENT.js

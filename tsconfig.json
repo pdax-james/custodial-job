@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Node 14",
+
+  "compilerOptions": {
+    "lib": ["es2020"],
+    "module": "commonjs",
+    "target": "es2020",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": false,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+
+    "outDir": "dist",
+    "rootDir": "./src",
+    "paths": {
+      "@root/*": ["./src/*"]
+    },
+    "typeRoots": [
+      "@types",
+      "./node_modules/@types"
+    ]
+  },
+  "exclude": ["node_modules", "./aws", "e2e", "dist", "**/*.test.ts"]
+}
